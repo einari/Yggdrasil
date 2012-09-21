@@ -1,4 +1,4 @@
-Ygdrasil
+Yggdrasil
 ========
 
-http://ancienthistory.about.com/od/creationmyths/a/11083199Norse.htm
+http://en.wikipedia.org/wiki/Yggdrasil
