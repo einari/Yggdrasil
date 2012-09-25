@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Yggdrasil.Execution.Activation
+namespace Yggdrasil.Activation
 {
 	public interface IActivationManager
 	{

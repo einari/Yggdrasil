@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Yggdrasil.Execution.Activation;
+using Yggdrasil.Activation;
 
-namespace Yggdrasil.Execution.Binding
+namespace Yggdrasil.Binding
 {
 	public class BindingDiscoverer : IBindingDiscoverer
 	{

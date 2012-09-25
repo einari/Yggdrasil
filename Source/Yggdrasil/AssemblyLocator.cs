@@ -7,7 +7,7 @@ using Windows.Foundation;
 using Windows.Storage;
 using Windows.Storage.Search;
 
-namespace Yggdrasil.Execution
+namespace Yggdrasil
 {
 	public class AssemblyLocator : IAssemblyLocator
 	{

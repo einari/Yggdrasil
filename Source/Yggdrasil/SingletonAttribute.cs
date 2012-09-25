@@ -21,7 +21,7 @@
 
 using System;
 
-namespace Yggdrasil.Execution
+namespace Yggdrasil
 {
 	[AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
 	public class SingletonAttribute : Attribute

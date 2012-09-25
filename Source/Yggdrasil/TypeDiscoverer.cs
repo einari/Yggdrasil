@@ -24,7 +24,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace Yggdrasil.Execution
+namespace Yggdrasil
 {
 	[Singleton]
 	public class TypeDiscoverer : ITypeDiscoverer

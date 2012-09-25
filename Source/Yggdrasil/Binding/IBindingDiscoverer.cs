@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Yggdrasil.Execution.Binding
+namespace Yggdrasil.Binding
 {
 	public interface IBindingDiscoverer
 	{

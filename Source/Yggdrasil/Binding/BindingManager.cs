@@ -3,7 +3,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace Yggdrasil.Execution.Binding
+namespace Yggdrasil.Binding
 {
 	public class BindingManager : IBindingManager
 	{

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 
-namespace Yggdrasil.Execution.Binding
+namespace Yggdrasil.Binding
 {
 	public class SelfBindingConvention : IBindingConvention
 	{

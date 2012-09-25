@@ -1,7 +1,7 @@
-﻿using Yggdrasil.Execution.Activation;
-using Yggdrasil.Execution.Binding;
+﻿using Yggdrasil.Activation;
+using Yggdrasil.Binding;
 
-namespace Yggdrasil.Execution
+namespace Yggdrasil
 {
 	public class ContainerContext
 	{

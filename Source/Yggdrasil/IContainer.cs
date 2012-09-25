@@ -1,7 +1,7 @@
 ﻿using System;
-using Yggdrasil.Execution.Activation;
+using Yggdrasil.Activation;
 
-namespace Yggdrasil.Execution
+namespace Yggdrasil
 {
 	public interface IContainer
 	{

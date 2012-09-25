@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Reflection;
 
-namespace Yggdrasil.Execution.Activation
+namespace Yggdrasil.Activation
 {
 	public class DefaultStrategy : IStrategy
 	{

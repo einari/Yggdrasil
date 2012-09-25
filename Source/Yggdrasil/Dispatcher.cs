@@ -1,7 +1,7 @@
 ﻿using System;
 using Windows.UI.Core;
 
-namespace Yggdrasil.Execution
+namespace Yggdrasil
 {
 	public class Dispatcher : IDispatcher
 	{

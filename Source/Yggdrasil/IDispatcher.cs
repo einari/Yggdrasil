@@ -1,6 +1,6 @@
 using System;
 
-namespace Yggdrasil.Execution
+namespace Yggdrasil
 {
 	public interface IDispatcher
 	{

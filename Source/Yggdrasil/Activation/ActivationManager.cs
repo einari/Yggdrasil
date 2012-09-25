@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Yggdrasil.Execution.Activation
+namespace Yggdrasil.Activation
 {
 	public class ActivationManager : IActivationManager
 	{

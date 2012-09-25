@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Yggdrasil.Execution.Activation
+namespace Yggdrasil.Activation
 {
 	public class SingletonScope : IScope
 	{

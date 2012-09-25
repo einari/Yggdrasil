@@ -1,7 +1,7 @@
 ﻿using System;
-using Yggdrasil.Execution.Activation;
+using Yggdrasil.Activation;
 
-namespace Yggdrasil.Execution.Binding
+namespace Yggdrasil.Binding
 {
 	public class StandardBinding : IBinding
 	{

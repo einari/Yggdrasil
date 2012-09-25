@@ -1,6 +1,6 @@
 using System;
 
-namespace Yggdrasil.Execution
+namespace Yggdrasil
 {
 	/// <summary>
 	/// Discovers types based upon basetypes
