@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>Yggdrasil</id>
+    <version>0.5.0.2</version>
+    <title>Yggdrasil</title>
+    <authors>Einar Ingebrigtsen</authors>
+    <owners>Dolittle</owners>
+    <licenseUrl>https://raw.github.com/dolittlestudios/Yggdrasil/master/MIT-LICENSE.txt</licenseUrl>
+    <projectUrl>http://github.com/dolittlestudios/yggdrasil</projectUrl>
+    <iconUrl>https://raw.github.com/dolittlestudios/Yggdrasil/master/icon.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>A simple IoC container for WinRT Windows Store apps</description>
+    <releaseNotes>Initial release</releaseNotes>
+    <copyright>Copyright 2012</copyright>
+    <tags>IoC WinRT Windows8</tags>
+  </metadata>
+</package>
