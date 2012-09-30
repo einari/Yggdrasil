@@ -1,0 +1,118 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{EB2270A8-DB73-4989-8B9C-03683FBCBA3F}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Yggdrasil.Specs</RootNamespace>
+    <AssemblyName>Yggdrasil.Specs</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Machine.Specifications">
+      <HintPath>..\Solutions\packages\Machine.Specifications.0.5.9\lib\net40\Machine.Specifications.dll</HintPath>
+    </Reference>
+    <Reference Include="Machine.Specifications.Clr4">
+      <HintPath>..\Solutions\packages\Machine.Specifications.0.5.9\lib\net40\Machine.Specifications.Clr4.dll</HintPath>
+    </Reference>
+    <Reference Include="Moq">
+      <HintPath>..\Solutions\packages\Moq.4.0.10827\lib\NET40\Moq.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <ProjectReference Include="..\Yggdrasil\Yggdrasil.csproj">
+      <Project>{8b90742d-9539-43c7-8d1c-66012b13f90a}</Project>
+      <Name>Yggdrasil</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Activation\for_ActivationManager\given\an_activation_manager.cs" />
+    <Compile Include="Activation\for_ActivationManager\when_getting_strategy_for_a_struct.cs" />
+    <Compile Include="Activation\for_ComplexStrategy\given\a_complex_strategy.cs" />
+    <Compile Include="Activation\for_ComplexStrategy\when_asking_if_class_with_default_constructor_can_be_activated.cs" />
+    <Compile Include="Activation\for_ComplexStrategy\when_asking_if_class_with_int_dependency_on_constructor_can_be_activated.cs" />
+    <Compile Include="Activation\for_ComplexStrategy\when_asking_if_class_with_multiple_constructors_can_be_activated.cs" />
+    <Compile Include="Activation\for_ComplexStrategy\when_asking_if_class_with_one_constructor_with_dependencies_can_be_activated.cs" />
+    <Compile Include="Activation\for_ComplexStrategy\when_asking_if_struct_can_be_activated.cs" />
+    <Compile Include="Activation\for_ComplexStrategy\when_creating_instance_of_type_with_one_dependency.cs" />
+    <Compile Include="Activation\for_ConstantStrategy\when_asking_for_instance.cs" />
+    <Compile Include="Activation\for_DefaultStrategy\given\a_default_activation_strategy.cs" />
+    <Compile Include="Activation\for_DefaultStrategy\when_activating_a_class_with_default_constructor.cs" />
+    <Compile Include="Activation\for_DefaultStrategy\when_activating_a_struct.cs" />
+    <Compile Include="Activation\for_DefaultStrategy\when_asking_if_can_activate_a_struct.cs" />
+    <Compile Include="Activation\for_DefaultStrategy\when_asking_if_can_activate_for_a_class_without_default_constructor.cs" />
+    <Compile Include="Activation\for_DefaultStrategy\when_asking_if_can_activate_for_a_class_with_default_constructor.cs" />
+    <Compile Include="Activation\for_SingletonScope\when_getting_twice_after_setting_once.cs" />
+    <Compile Include="Binding\for_BindingDiscoverer\given\a_binding_discoverer.cs" />
+    <Compile Include="Binding\for_BindingDiscoverer\given\a_binding_discoverer_with_one_convention.cs" />
+    <Compile Include="Binding\for_BindingDiscoverer\when_discovering_type_and_there_is_a_convention_that_supports_it.cs" />
+    <Compile Include="Binding\for_BindingManager\given\a_binding_manager.cs" />
+    <Compile Include="Binding\for_BindingManager\TargetWithSingletonAttribute.cs" />
+    <Compile Include="Binding\for_BindingManager\when_asking_for_binding_and_it_has_been_registered.cs" />
+    <Compile Include="Binding\for_BindingManager\when_registering_class_marked_with_singleton.cs" />
+    <Compile Include="Binding\for_DefaultBindingConvention\given\a_default_binding_convention.cs" />
+    <Compile Include="Binding\for_DefaultBindingConvention\when_asking_if_can_be_bound_for_interface_without_implementation_in_same_namespace.cs" />
+    <Compile Include="Binding\for_DefaultBindingConvention\when_asking_if_can_be_bound_for_interface_with_implementation_in_same_namespace.cs" />
+    <Compile Include="Binding\for_DefaultBindingConvention\when_getting_binding_target_for_interface_with_implementation_in_same_namespace.cs" />
+    <Compile Include="Binding\for_SelfBindingConvention\given\a_self_binding_convention.cs" />
+    <Compile Include="Binding\for_SelfBindingConvention\SomeClass.cs" />
+    <Compile Include="Binding\for_SelfBindingConvention\when_asking_if_class_can_be_bound.cs" />
+    <Compile Include="Binding\for_SelfBindingConvention\when_asking_if_interface_can_be_bound.cs" />
+    <Compile Include="Binding\for_SelfBindingConvention\when_getting_target_for_a_class.cs" />
+    <Compile Include="ClassWithDefaultConstructor.cs" />
+    <Compile Include="ClassWithIntDependencyOnConstructor.cs" />
+    <Compile Include="ClassWithMultipleConstructors.cs" />
+    <Compile Include="ClassWithServiceDependency.cs" />
+    <Compile Include="for_Container\given\a_container.cs" />
+    <Compile Include="for_Container\when_getting_an_instance_and_there_is_a_binding.cs" />
+    <Compile Include="for_Container\when_getting_an_instance_that_has_no_registration_and_is_not_discovered.cs" />
+    <Compile Include="for_Container\when_getting_an_instance_that_has_no_registration_but_can_be_discovered.cs" />
+    <Compile Include="for_Container\when_getting_an_instance_that_is_in_scope_return_that_instance.cs" />
+    <Compile Include="for_Container\when_getting_an_instance_that_is_not_in_scope.cs" />
+    <Compile Include="for_Container\when_registering_a_constant.cs" />
+    <Compile Include="for_Container\when_registering_a_service_with_a_null_target.cs" />
+    <Compile Include="for_Container\when_registering_a_service_with_a_target.cs" />
+    <Compile Include="IServiceWithImplementation.cs" />
+    <Compile Include="IServiceWithoutImplementation.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ServiceWithImplementation.cs" />
+    <Compile Include="SimpleStruct.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
