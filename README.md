@@ -5,6 +5,8 @@ A simple IoC container for WinRT Windows Store apps
 
 http://en.wikipedia.org/wiki/Yggdrasil
 
+http://nuget.org/packages/Yggdrasil/
+
 # Getting Started #
 
 Lets imagine you have an interface
