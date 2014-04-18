@@ -6,6 +6,13 @@ namespace Yggdrasil.Specs.Binding.for_DefaultBindingConvention
 	{
 		static bool result;
 
+        Establish context = () =>
+        {
+            type_definition_mock.Setup(t => t.IsInterface).Returns(true);
+            type_definition_mock.Setup(t => t.Namespace).Returns("SomeNamespace");
+            type_system_mock.Setup(t => t.GetType("SomeNamespace.ServiceWithImplementation")).Returns(typeof(ServiceWithImplementation));
+        };
+
 		Because of = () => result = convention.CanBeBound(typeof(IServiceWithImplementation));
 
 		It should_result_in_true = () => result.ShouldBeTrue();

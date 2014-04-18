@@ -1,5 +1,6 @@
 ﻿using Yggdrasil.Activation;
 using Yggdrasil.Binding;
+using Yggdrasil.Types;
 
 namespace Yggdrasil
 {
@@ -25,15 +26,22 @@ namespace Yggdrasil
 
 		static void InitializeDefault()
 		{
-			_current = new Container();
+			
 
+#if(NETMF)
+            var typeDiscoverer = new TypeDiscoverer();
+#else
 			var assemblyLocator = new AssemblyLocator();
 			var typeDiscoverer = new TypeDiscoverer(assemblyLocator);
+#endif
+            var typeSystem = new TypeSystem();
 
-			var bindingManager = new BindingManager();
+            _current = new Container(typeSystem);
+
+			var bindingManager = new BindingManager(typeSystem);
 			var strategyActivator = new StrategyActivator(_current);
 			var activationManager = new ActivationManager(typeDiscoverer, strategyActivator);
-			var bindingDiscoverer = new BindingDiscoverer(activationManager, typeDiscoverer);
+			var bindingDiscoverer = new BindingDiscoverer(activationManager, typeSystem, typeDiscoverer);
 
 			_current.Initialize(bindingManager, bindingDiscoverer, activationManager);
 		}

@@ -1,21 +1,31 @@
 ﻿using System;
+using System.Collections;
+#if(!NETMF)
 using System.Collections.Generic;
-using System.Linq;
+#endif
 using System.Reflection;
 using Yggdrasil.Activation;
+using Yggdrasil.Types;
 
 namespace Yggdrasil.Binding
 {
 	public class BindingDiscoverer : IBindingDiscoverer
 	{
-		readonly List<IBindingConvention> _conventions = new List<IBindingConvention>();
-		readonly IActivationManager _activationManager;
+#if(NETMF)
+        ArrayList _conventions = new ArrayList();
+#else
+        List<IBindingConvention> _conventions = new List<IBindingConvention>();
+#endif
+		IActivationManager _activationManager;
 
-		public BindingDiscoverer(IActivationManager activationManager, ITypeDiscoverer typeDiscoverer)
+        public BindingDiscoverer(IActivationManager activationManager, ITypeSystem typeSystem, ITypeDiscoverer typeDiscoverer)
 		{
 			var conventionTypes = typeDiscoverer.FindMultiple(typeof(IBindingConvention));
-			foreach( var conventionType in conventionTypes )
-				_conventions.Add((IBindingConvention)Activator.CreateInstance(conventionType));
+            foreach (var conventionType in conventionTypes)
+            {
+                var instance = typeSystem.GetDefinitionFor(conventionType).CreateInstance();
+                _conventions.Add((IBindingConvention)instance);
+            }
 
 			_activationManager = activationManager;
 		}
@@ -27,14 +37,17 @@ namespace Yggdrasil.Binding
 
 		public IBinding Discover(Type type)
 		{
-			var convention = _conventions.Where(c => c.CanBeBound(type)).FirstOrDefault();
-			if( convention != null )
-			{
-				var target = convention.GetBindingTarget(type);
-				var activationStrategy = _activationManager.GetStrategyFor(target);
-				var binding = new StandardBinding(type, target, activationStrategy);
-				return binding;
-			}
+            foreach (IBindingConvention convention in _conventions)
+            {
+                if (convention.CanBeBound(type))
+                {
+                    var target = convention.GetBindingTarget(type);
+                    var activationStrategy = _activationManager.GetStrategyFor(target);
+                    var binding = new StandardBinding(type, target, activationStrategy);
+                    return binding;
+                    
+                }
+            }
 			return null;
 		}
 	}

@@ -5,9 +5,17 @@ namespace Yggdrasil.Binding
 {
 	public class DefaultBindingConvention : IBindingConvention
 	{
+        IContainer _container;
+
+        public DefaultBindingConvention(IContainer container)
+        {
+            _container = container;
+        }
+
+
 		public bool CanBeBound(Type type)
 		{
-			if(type.Name.StartsWith("I") && type.GetTypeInfo().IsInterface)
+			if(type.Name.StartsWith("I") && _container.TypeSystem.GetDefinitionFor(type).IsInterface)
 			{
 				var targetType = GetTargetType(type);
 				return targetType != null;
@@ -15,14 +23,11 @@ namespace Yggdrasil.Binding
 			return false;
 		}
 
-		static Type GetTargetType(Type type)
+		Type GetTargetType(Type type)
 		{
-#if(NETMF)
-            return type; // throw new NotImplementedException();
-#else
-            var typeName = type.Namespace + "." + type.Name.Substring(1);
-			return type.GetTypeInfo().Assembly.GetType(typeName);
-#endif
+            var typeDefinition = _container.TypeSystem.GetDefinitionFor(type);
+            var typeName = typeDefinition.Namespace + "." + type.Name.Substring(1);
+			return _container.TypeSystem.GetType(typeName);
 		}
 
 		public Type GetBindingTarget(Type type)

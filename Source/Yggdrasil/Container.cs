@@ -1,6 +1,7 @@
 ﻿using System;
 using Yggdrasil.Activation;
 using Yggdrasil.Binding;
+using Yggdrasil.Types;
 
 namespace Yggdrasil
 {
@@ -10,22 +11,30 @@ namespace Yggdrasil
 		IBindingDiscoverer _bindingDiscoverer;
 		IActivationManager _activationManager;
 
-		public Container(IBindingManager bindingManager, IBindingDiscoverer bindingDiscoverer, IActivationManager activationManager)
+		public Container(IBindingManager bindingManager, IBindingDiscoverer bindingDiscoverer, IActivationManager activationManager, ITypeSystem typeSystem)
 		{
 			_bindingManager = bindingManager;
 			_bindingDiscoverer = bindingDiscoverer;
 			_activationManager = activationManager;
+            TypeSystem = typeSystem;
 		}
 
-		internal Container() {}
+		internal Container(ITypeSystem typeSystem) 
+        {
+            TypeSystem = typeSystem;
+        }
+
 		internal void Initialize(IBindingManager bindingManager, IBindingDiscoverer bindingDiscoverer, IActivationManager activationManager)
 		{
 			_bindingManager = bindingManager;
 			_bindingDiscoverer = bindingDiscoverer;
 			_activationManager = activationManager;
-			Register<IContainer>(this);
+			Register(typeof(IContainer),this);
 		}
 
+        public ITypeSystem TypeSystem { get; private set; }
+
+#if(!NETMF)
 		public T Get<T>()
 		{
 			var service = typeof(T);
@@ -33,7 +42,18 @@ namespace Yggdrasil
 			return (T) instance;
 		}
 
-		public object Get(Type service)
+		public void Register<TS, TT>(IScope scope = null) where TT : TS
+		{
+			Register(typeof (TS), typeof (TT));
+		}
+
+		public void Register<TS>(TS instance, IScope scope = null)
+		{
+			Register(typeof(TS), instance);
+		}
+#endif
+
+        public object Get(Type service)
 		{
 			IBinding binding = null;
 			if( _bindingManager.HasBinding(service) )
@@ -50,10 +70,6 @@ namespace Yggdrasil
 			return binding != null ? Activate(binding) : null;
 		}
 
-		public void Register<TS, TT>(IScope scope = null) where TT : TS
-		{
-			Register(typeof (TS), typeof (TT));
-		}
 
 		public void Register(Type service, Type target, IScope scope = null)
 		{
@@ -62,11 +78,6 @@ namespace Yggdrasil
 			var strategy = _activationManager.GetStrategyFor(target);
 			var binding = new StandardBinding(service, target, strategy) {Scope = scope};
 			_bindingManager.Register(binding);
-		}
-
-		public void Register<TS>(TS instance, IScope scope = null)
-		{
-			Register(typeof(TS), instance);
 		}
 
 		public void Register(Type service, object instance, IScope scope = null)

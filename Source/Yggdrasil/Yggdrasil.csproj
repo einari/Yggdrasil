@@ -139,6 +139,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SingletonAttribute.cs" />
     <Compile Include="TypeDiscoverer.cs" />
+    <Compile Include="Types\ITypeDefinition.cs" />
+    <Compile Include="Types\ITypeSystem.cs" />
+    <Compile Include="Types\TypeDefinition.cs" />
+    <Compile Include="Types\TypeSystem.cs" />
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '11.0' ">
     <VisualStudioVersion>11.0</VisualStudioVersion>

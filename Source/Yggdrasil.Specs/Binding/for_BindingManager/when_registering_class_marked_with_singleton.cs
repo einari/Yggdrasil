@@ -17,6 +17,8 @@ namespace Yggdrasil.Specs.Binding.for_BindingManager
 		                    		binding_mock.Setup(b => b.Service).Returns(typeof (ISomething));
 		                    		binding_mock.Setup(b => b.Target).Returns(typeof (TargetWithSingletonAttribute));
 		                    		binding_mock.SetupSet(b => b.Scope).Callback(s => scope_set = s);
+
+                                    type_definition_mock.Setup(t => t.HasSingletonAttribute).Returns(true);
 		                    	};
 
 		Because of = () => binding_manager.Register(binding_mock.Object);

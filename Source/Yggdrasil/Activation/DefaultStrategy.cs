@@ -1,24 +1,31 @@
 ﻿using System;
-using System.Linq;
-using System.Reflection;
+using Yggdrasil.Types;
 
 namespace Yggdrasil.Activation
 {
 	public class DefaultStrategy : IStrategy
 	{
+        IContainer _container;
+
+        public DefaultStrategy(IContainer container)
+        {
+            _container = container;
+        }
+
+
 		public bool CanActivate(Type type)
 		{
-            var typeInfo = type.GetTypeInfo();
-			if (typeInfo.IsValueType)
-				return true;
+            var typeDefinition = _container.TypeSystem.GetDefinitionFor(type);
+            if (typeDefinition.IsValueType) return true;
 
-            var constructor = typeInfo.DeclaredConstructors.FirstOrDefault(c => c.GetParameters().Length == 0);
-			return constructor != null;
+            if (typeDefinition.HasDefaultConstructor) return true;
+            return false;
 		}
 
 		public object GetInstance(Type type)
 		{
-			return Activator.CreateInstance(type);
+            var typeDefinition = _container.TypeSystem.GetDefinitionFor(type);
+            return typeDefinition.CreateInstance();
 		}
 	}
 }

@@ -7,6 +7,12 @@ namespace Yggdrasil.Specs.Binding.for_DefaultBindingConvention
 	{
 		static Type target_type;
 
+        Establish context = () =>
+        {
+            type_definition_mock.Setup(t => t.Namespace).Returns("SomeNamespace");
+            type_system_mock.Setup(t => t.GetType("SomeNamespace.ServiceWithImplementation")).Returns(typeof(ServiceWithImplementation));
+        };
+
 		Because of = () => target_type = convention.GetBindingTarget(typeof(IServiceWithImplementation));
 
 		It should_not_be_null = () => target_type.ShouldNotBeNull();

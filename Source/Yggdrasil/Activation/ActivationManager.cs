@@ -1,14 +1,21 @@
 ﻿using System;
+using System.Collections;
+#if(!NETMF)
 using System.Collections.Generic;
-using System.Linq;
+#endif
+
 
 namespace Yggdrasil.Activation
 {
 	public class ActivationManager : IActivationManager
 	{
-		readonly ITypeDiscoverer _discoverer;
-		readonly IStrategyActivator _strategyActivator;
-		readonly List<IStrategy> _strategies = new List<IStrategy>();
+		ITypeDiscoverer _discoverer;
+		IStrategyActivator _strategyActivator;
+#if(NETMF)
+		ArrayList _strategies = new ArrayList();
+#else
+        List<IStrategy> _strategies = new List<IStrategy>();
+#endif
 
 		public ActivationManager(ITypeDiscoverer discoverer, IStrategyActivator strategyActivator)
 		{
@@ -34,8 +41,11 @@ namespace Yggdrasil.Activation
 			if( _strategies.Count == 0 )
 				DiscoverStrategies();
 
-			var strategy = _strategies.Where(s => s.CanActivate(type)).SingleOrDefault();
-			return strategy;
+
+            foreach (IStrategy strategy in _strategies)
+                if (strategy.CanActivate(type)) return strategy;
+
+            return null;
 		}
 	}
 }

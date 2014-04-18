@@ -1,15 +1,26 @@
 ﻿using System;
+using System.Collections;
+#if(!NETMF)
 using System.Collections.Generic;
+#endif
 
 namespace Yggdrasil.Activation
 {
 	public class SingletonScope : IScope
 	{
-		readonly Dictionary<Type, object> _instances = new Dictionary<Type, object>();
+#if(NETMF)
+        Hashtable _instances = new Hashtable();
+#else
+        Dictionary<Type, object> _instances = new Dictionary<Type, object>();
+#endif
 
 		public bool IsInScope(Type type)
 		{
-			return _instances.ContainsKey(type);
+#if(NETMF)
+            return _instances.Contains(type);
+#else
+            return _instances.ContainsKey(type);
+#endif
 		}
 
 		public object GetInstance(Type type)

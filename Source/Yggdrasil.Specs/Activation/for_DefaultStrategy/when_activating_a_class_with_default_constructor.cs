@@ -8,6 +8,6 @@ namespace Yggdrasil.Specs.Activation.for_DefaultStrategy
 
 		Because of = () => result = (ClassWithDefaultConstructor)strategy.GetInstance(typeof(ClassWithDefaultConstructor));
 
-		It should_create_instance = () => result.ShouldNotBeNull();
+        It should_create_instance = () => type_definition_mock.Verify(t => t.CreateInstance(), Moq.Times.Once());
 	}
 }

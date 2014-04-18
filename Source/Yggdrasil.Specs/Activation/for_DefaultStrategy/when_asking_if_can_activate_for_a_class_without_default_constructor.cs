@@ -6,6 +6,12 @@ namespace Yggdrasil.Specs.Activation.for_DefaultStrategy
 	{
 		static bool result;
 
+        Establish context = () =>
+        {
+            type_definition_mock.SetupGet(t => t.IsValueType).Returns(false);
+            type_definition_mock.SetupGet(t => t.HasDefaultConstructor).Returns(false);
+        };
+
 		Because of = () => result = strategy.CanActivate(typeof(ClassWithIntDependencyOnConstructor));
 
 		It should_result_in_false = () => result.ShouldBeFalse();
