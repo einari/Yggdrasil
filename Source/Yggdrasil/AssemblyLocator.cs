@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+#if(NETFX_CORE)
 using System.Windows;
 using Windows.Foundation;
 using Windows.Storage;
 using Windows.Storage.Search;
+#endif
 
 namespace Yggdrasil
 {

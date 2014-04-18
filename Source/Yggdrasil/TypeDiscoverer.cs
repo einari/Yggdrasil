@@ -42,13 +42,16 @@ namespace Yggdrasil
 		void CollectTypes()
 		{
             foreach (var assembly in _assemblyLocator.GetAll())
+#if(NETMF)
+                _types.AddRange(assembly.GetTypes());
+#else
                 _types.AddRange(assembly.DefinedTypes.Select(t => t.AsType()));
+#endif
 		}
 
 
-		private Type[] Find<T>()
+		private Type[] Find(Type type)
 		{
-			var type = typeof(T);
             var typeInfo = type.GetTypeInfo();
 			var query = from t in _types
 						where typeInfo.IsAssignableFrom(t.GetTypeInfo()) && !t.GetTypeInfo().IsInterface && !t.GetTypeInfo().IsAbstract
@@ -58,21 +61,25 @@ namespace Yggdrasil
 		}
 
 
-		public Type FindSingle<T>()
+		public Type FindSingle(Type type)
 		{
-			var typesFound = Find<T>();
+			var typesFound = Find(type);
 
-			if( typesFound.Length > 1 )
-			{
-				throw new ArgumentException(string.Format("More than one type found for '{0}'",typeof(T).FullName));
-			}
+            ThrowIfMoreThanOneTypeFound(type, typesFound);
 			return typesFound.SingleOrDefault();
 		}
 
-		public Type[] FindMultiple<T>()
+		public Type[] FindMultiple(Type type)
 		{
-			var typesFound = Find<T>();
+			var typesFound = Find(type);
 			return typesFound;
 		}
+
+
+        void ThrowIfMoreThanOneTypeFound(Type type, Type[] typesFound)
+        {
+            if (typesFound.Length > 1)
+                throw new ArgumentException("More than one type found for '" + type.FullName + "'");
+        }
 	}
 }

@@ -16,6 +16,8 @@ namespace Yggdrasil.Activation
 		public IStrategy GetInstance(Type type)
 		{
             var typeInfo = type.GetTypeInfo();
+            
+
             var defaultConstructor = typeInfo.DeclaredConstructors.Where(c => c.GetParameters().Length == 0).FirstOrDefault();
 			if (defaultConstructor != null)
 				return Activator.CreateInstance(type) as IStrategy;

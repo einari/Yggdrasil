@@ -24,9 +24,11 @@ namespace Yggdrasil.Binding
 		{
 			if( binding.Scope == null && binding.Target != null )
 			{
+#if(!NETMF)
 				var attributes = binding.Target.GetTypeInfo().GetCustomAttributes(typeof (SingletonAttribute), true);
 				if (attributes.Count() == 1)
 					binding.Scope = In.SingletonScope();
+#endif
 			}
 
 			_bindings[binding.Service] = binding;

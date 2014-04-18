@@ -18,7 +18,7 @@ namespace Yggdrasil.Activation
 
 		void DiscoverStrategies()
 		{
-			var strategyTypes = _discoverer.FindMultiple<IStrategy>();
+			var strategyTypes = _discoverer.FindMultiple(typeof(IStrategy));
             foreach (var strategyType in strategyTypes)
             {
                 var instance = _strategyActivator.GetInstance(strategyType);

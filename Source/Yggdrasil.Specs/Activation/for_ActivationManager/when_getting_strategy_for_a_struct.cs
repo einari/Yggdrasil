@@ -15,7 +15,7 @@ namespace Yggdrasil.Specs.Activation.for_ActivationManager
 		                    		activation_strategy_mock = new Mock<IStrategy>();
 		                    		activation_strategy_mock.Setup(a => a.CanActivate(typeof (SimpleStruct))).Returns(true);
 									strategy_activator_mock.Setup(s => s.GetInstance(activation_strategy_mock.Object.GetType())).Returns(activation_strategy_mock.Object);
-		                    		type_discoverer_mock.Setup(t => t.FindMultiple<IStrategy>()).Returns(new[] {activation_strategy_mock.Object.GetType()});
+		                    		type_discoverer_mock.Setup(t => t.FindMultiple(typeof(IStrategy))).Returns(new[] {activation_strategy_mock.Object.GetType()});
 		                    	};
 
 		Because of = () => strategy = manager.GetStrategyFor(typeof(SimpleStruct));

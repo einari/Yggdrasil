@@ -17,8 +17,12 @@ namespace Yggdrasil.Binding
 
 		static Type GetTargetType(Type type)
 		{
-			var typeName = string.Format("{0}.{1}", type.Namespace, type.Name.Substring(1));
+#if(NETMF)
+            return type; // throw new NotImplementedException();
+#else
+            var typeName = type.Namespace + "." + type.Name.Substring(1);
 			return type.GetTypeInfo().Assembly.GetType(typeName);
+#endif
 		}
 
 		public Type GetBindingTarget(Type type)

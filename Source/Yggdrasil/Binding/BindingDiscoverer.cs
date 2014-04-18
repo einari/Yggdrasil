@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using Yggdrasil.Activation;
 
 namespace Yggdrasil.Binding
@@ -12,7 +13,7 @@ namespace Yggdrasil.Binding
 
 		public BindingDiscoverer(IActivationManager activationManager, ITypeDiscoverer typeDiscoverer)
 		{
-			var conventionTypes = typeDiscoverer.FindMultiple<IBindingConvention>();
+			var conventionTypes = typeDiscoverer.FindMultiple(typeof(IBindingConvention));
 			foreach( var conventionType in conventionTypes )
 				_conventions.Add((IBindingConvention)Activator.CreateInstance(conventionType));
 
