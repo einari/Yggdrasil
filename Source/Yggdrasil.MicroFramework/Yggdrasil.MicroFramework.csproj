@@ -1,0 +1,137 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <AssemblyName>Yggdrasil.MicroFramework</AssemblyName>
+    <OutputType>Library</OutputType>
+    <RootNamespace>Yggdrasil</RootNamespace>
+    <ProjectTypeGuids>{b69e3092-b931-443c-abe7-7e7b65f2a37f};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{45F4B08F-4C36-404C-B33F-637849E4C405}</ProjectGuid>
+    <TargetFrameworkVersion>v4.2</TargetFrameworkVersion>
+    <NetMfTargetsBaseDir Condition="'$(NetMfTargetsBaseDir)'==''">$(MSBuildExtensionsPath32)\Microsoft\.NET Micro Framework\</NetMfTargetsBaseDir>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE,MF_FRAMEWORK_VERSION_V4_2, NETMF</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <NoWarn>0444</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <Import Project="$(NetMfTargetsBaseDir)$(TargetFrameworkVersion)\CSharp.Targets" />
+  <ItemGroup>
+    <Compile Include="..\Yggdrasil\Activation\ActivationManager.cs">
+      <Link>Activation\ActivationManager.cs</Link>
+    </Compile>
+    <Compile Include="..\Yggdrasil\Activation\ActivationStrategyConstructorMissing.cs">
+      <Link>Activation\ActivationStrategyConstructorMissing.cs</Link>
+    </Compile>
+    <Compile Include="..\Yggdrasil\Activation\ComplexStrategy.cs">
+      <Link>Activation\ComplexStrategy.cs</Link>
+    </Compile>
+    <Compile Include="..\Yggdrasil\Activation\ConstantStrategy.cs">
+      <Link>Activation\ConstantStrategy.cs</Link>
+    </Compile>
+    <Compile Include="..\Yggdrasil\Activation\DefaultStrategy.cs">
+      <Link>Activation\DefaultStrategy.cs</Link>
+    </Compile>
+    <Compile Include="..\Yggdrasil\Activation\IActivationManager.cs">
+      <Link>Activation\IActivationManager.cs</Link>
+    </Compile>
+    <Compile Include="..\Yggdrasil\Activation\IScope.cs">
+      <Link>Activation\IScope.cs</Link>
+    </Compile>
+    <Compile Include="..\Yggdrasil\Activation\IStrategy.cs">
+      <Link>Activation\IStrategy.cs</Link>
+    </Compile>
+    <Compile Include="..\Yggdrasil\Activation\IStrategyActivator.cs">
+      <Link>Activation\IStrategyActivator.cs</Link>
+    </Compile>
+    <Compile Include="..\Yggdrasil\Activation\MissingTargetTypeException.cs">
+      <Link>Activation\MissingTargetTypeException.cs</Link>
+    </Compile>
+    <Compile Include="..\Yggdrasil\Activation\SingletonScope.cs">
+      <Link>Activation\SingletonScope.cs</Link>
+    </Compile>
+    <Compile Include="..\Yggdrasil\Activation\StrategyActivator.cs">
+      <Link>Activation\StrategyActivator.cs</Link>
+    </Compile>
+    <Compile Include="..\Yggdrasil\Activation\UnableToActivateException.cs">
+      <Link>Activation\UnableToActivateException.cs</Link>
+    </Compile>
+    <Compile Include="..\Yggdrasil\Binding\BindingDiscoverer.cs">
+      <Link>Binding\BindingDiscoverer.cs</Link>
+    </Compile>
+    <Compile Include="..\Yggdrasil\Binding\BindingManager.cs">
+      <Link>Binding\BindingManager.cs</Link>
+    </Compile>
+    <Compile Include="..\Yggdrasil\Binding\DefaultBindingConvention.cs">
+      <Link>Binding\DefaultBindingConvention.cs</Link>
+    </Compile>
+    <Compile Include="..\Yggdrasil\Binding\IBinding.cs">
+      <Link>Binding\IBinding.cs</Link>
+    </Compile>
+    <Compile Include="..\Yggdrasil\Binding\IBindingConvention.cs">
+      <Link>Binding\IBindingConvention.cs</Link>
+    </Compile>
+    <Compile Include="..\Yggdrasil\Binding\IBindingDiscoverer.cs">
+      <Link>Binding\IBindingDiscoverer.cs</Link>
+    </Compile>
+    <Compile Include="..\Yggdrasil\Binding\IBindingManager.cs">
+      <Link>Binding\IBindingManager.cs</Link>
+    </Compile>
+    <Compile Include="..\Yggdrasil\Binding\SelfBindingConvention.cs">
+      <Link>Binding\SelfBindingConvention.cs</Link>
+    </Compile>
+    <Compile Include="..\Yggdrasil\Binding\StandardBinding.cs">
+      <Link>Binding\StandardBinding.cs</Link>
+    </Compile>
+    <Compile Include="..\Yggdrasil\Container.cs">
+      <Link>Container.cs</Link>
+    </Compile>
+    <Compile Include="..\Yggdrasil\ContainerContext.cs">
+      <Link>ContainerContext.cs</Link>
+    </Compile>
+    <Compile Include="..\Yggdrasil\IContainer.cs">
+      <Link>IContainer.cs</Link>
+    </Compile>
+    <Compile Include="..\Yggdrasil\In.cs">
+      <Link>In.cs</Link>
+    </Compile>
+    <Compile Include="..\Yggdrasil\ITypeDiscoverer.cs">
+      <Link>ITypeDiscoverer.cs</Link>
+    </Compile>
+    <Compile Include="..\Yggdrasil\SingletonAttribute.cs">
+      <Link>SingletonAttribute.cs</Link>
+    </Compile>
+    <Compile Include="..\Yggdrasil\Types\ITypeDefinition.cs">
+      <Link>Types\ITypeDefinition.cs</Link>
+    </Compile>
+    <Compile Include="..\Yggdrasil\Types\ITypeSystem.cs">
+      <Link>Types\ITypeSystem.cs</Link>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="System\StringExtensions.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TypeDiscoverer.cs" />
+    <Compile Include="Types\TypeSystem.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.SPOT.Native">
+    </Reference>
+  </ItemGroup>
+</Project>
