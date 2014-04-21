@@ -9,6 +9,7 @@ namespace Yggdrasil.Microframework.TestApp
 
     public class Something
     {
+        public static string Hello = "World";
     }
 
 
