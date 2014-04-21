@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.SPOT;
+using Yggdrasil.Types;
 
 namespace Yggdrasil.Microframework.TestApp
 {
@@ -7,18 +8,12 @@ namespace Yggdrasil.Microframework.TestApp
     {
     }
 
-    public class TypeInfo
-    {
-        public Type Type;
-        public bool IsValueType;
-        public bool IsInterface;
-        public int ConstructorCount;
-    }
 
     public class Something
     {
         public static Type[] Hello;
         public static TypeInfo[] Types;
+        public static ConstructorInfo[] c;
 
         static Something()
         {
@@ -27,18 +22,46 @@ namespace Yggdrasil.Microframework.TestApp
                 typeof(Something)
             };
 
+            c = new[] 
+                    { 
+                        new ConstructorInfo 
+                        { 
+                            Parameters = new [] 
+                            { 
+                                new ConstructorParameter 
+                                { 
+                                    Type = typeof(string), 
+                                    Name = "blah" 
+                                } 
+                            } 
+                        } 
+                    }; 
 
-            Types = new [] {
-                new TypeInfo { Type = typeof(ISomething), IsValueType = true, IsInterface = true, ConstructorCount = 0 },
-                new TypeInfo { Type = typeof(Something), IsValueType = false, IsInterface = false, ConstructorCount = 3 },
-                new TypeInfo { Type = typeof(ISomething), IsValueType = true, IsInterface = true, ConstructorCount = 0 },
-                new TypeInfo { Type = typeof(Something), IsValueType = false, IsInterface = false, ConstructorCount = 3 },
-                new TypeInfo { Type = typeof(ISomething), IsValueType = true, IsInterface = true, ConstructorCount = 0 },
-                new TypeInfo { Type = typeof(Something), IsValueType = false, IsInterface = false, ConstructorCount = 3 }
+
+            Types = new[] {
+                new TypeInfo { 
+                    Type = typeof(ISomething), 
+                    HasSingletonAttribute = true, 
+                    Constructors = new[] 
+                    { 
+                        new ConstructorInfo 
+                        { 
+                            Parameters = new [] 
+                            { 
+                                new ConstructorParameter 
+                                { 
+                                    Type = typeof(string), 
+                                    Name = "blah" 
+                                } 
+                            } 
+                        } 
+                    } 
+                },
+                new TypeInfo { Type = typeof(Something), HasSingletonAttribute = true  },
 
             };
 
-            
+
         }
 
     }

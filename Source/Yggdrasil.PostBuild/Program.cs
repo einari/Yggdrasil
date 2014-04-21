@@ -16,6 +16,7 @@ namespace Yggdrasil.PostBuild
 
             var file = "Yggdrasil.Microframework.TestApp.exe";
             var assemblyDefinition = AssemblyDefinition.ReadAssembly(file);
+            
 
             var typeMetaData = new TypeDefinition("Yggdrasil", "_TypeMetaData", TypeAttributes.Class | TypeAttributes.Public);
             assemblyDefinition.MainModule.Types.Add(typeMetaData);
@@ -23,7 +24,6 @@ namespace Yggdrasil.PostBuild
             var types = GetAllTypes(assemblyDefinition);
 
             var constructor = GetStaticConstructor(assemblyDefinition, typeMetaData);
-            AddAllTypes(assemblyDefinition, typeMetaData, types, constructor);
             AddTypeDefinitions(assemblyDefinition, typeMetaData, types, constructor);
 
             // Generate array with configuration for all types
@@ -63,79 +63,72 @@ namespace Yggdrasil.PostBuild
         {
             var module = assemblyDefinition.MainModule;
 
-            var typeInfoTypeDefinition = new TypeDefinition("Yggdrasil", "_TypeInfo", TypeAttributes.Class | TypeAttributes.Public);
-            assemblyDefinition.MainModule.Types.Add(typeInfoTypeDefinition);
-
-            var typeTypeReference = assemblyDefinition.MainModule.GetType("System.Type",true);
-            var typeFieldDefinition = new FieldDefinition("Type", FieldAttributes.Public, typeTypeReference);
-            typeInfoTypeDefinition.Fields.Add(typeFieldDefinition);
-
-            var namespaceFieldDefinition = new FieldDefinition("Namespace", FieldAttributes.Public, module.TypeSystem.String);
-            typeInfoTypeDefinition.Fields.Add(namespaceFieldDefinition);
-
-            var isValueFieldDefinition = new FieldDefinition("IsValueType", FieldAttributes.Public, module.TypeSystem.Boolean);
-            typeInfoTypeDefinition.Fields.Add(isValueFieldDefinition);
-
-            var isInterfaceFieldDefinition = new FieldDefinition("IsInterface", FieldAttributes.Public, module.TypeSystem.Boolean);
-            typeInfoTypeDefinition.Fields.Add(isInterfaceFieldDefinition);
-
-            var ConstuctorCountFieldDefinition = new FieldDefinition("ConstructorCount", FieldAttributes.Public, module.TypeSystem.Int32);
-            typeInfoTypeDefinition.Fields.Add(ConstuctorCountFieldDefinition);
-
-            var hasConstructorFieldDefinition = new FieldDefinition("HasConstructor", FieldAttributes.Public, module.TypeSystem.Boolean);
-            typeInfoTypeDefinition.Fields.Add(hasConstructorFieldDefinition);
-
-            var hasDefaultConstructorFieldDefinition = new FieldDefinition("HasDefaultConstructor", FieldAttributes.Public, module.TypeSystem.Boolean);
-            typeInfoTypeDefinition.Fields.Add(hasDefaultConstructorFieldDefinition);
-
-            var hasSingletonAttributeFieldDefinition = new FieldDefinition("HasSingletonAttribute", FieldAttributes.Public, module.TypeSystem.Boolean);
-            typeInfoTypeDefinition.Fields.Add(hasSingletonAttributeFieldDefinition);
-
-            var typeInfoTypeDefinitionConstructor = new MethodDefinition(
-                ".ctor",
-                MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.SpecialName | MethodAttributes.RTSpecialName,
-                assemblyDefinition.MainModule.TypeSystem.Void);
-            typeInfoTypeDefinition.Methods.Add(typeInfoTypeDefinitionConstructor);
             
+            var yggdrasilAssembly = AssemblyDefinition.ReadAssembly("Yggdrasil.dll");
+            yggdrasilAssembly.MainModule.AssemblyReferences.Add(yggdrasilAssembly.Name);
+
+            var typeInfoTypeDefinition = yggdrasilAssembly.MainModule.GetType("Yggdrasil.Types.TypeInfo", true).Resolve();
+            var typeInfoTypeDefinitionConstructor = typeInfoTypeDefinition.Methods.Single(t => t.Name == ".ctor");
+            var typeInfoTypeFieldDefinition = module.Import(typeInfoTypeDefinition.Fields.Single(t => t.Name == "Type"));
+            var typeInfoNamespaceFieldDefinition = module.Import(typeInfoTypeDefinition.Fields.Single(t => t.Name == "Namespace"));
+            var typeInfoConstructorsFieldDefinition = module.Import(typeInfoTypeDefinition.Fields.Single(t => t.Name == "Constructors"));
+            var typeInfoHasSingletonAttributeFieldDefinition = module.Import(typeInfoTypeDefinition.Fields.Single(t => t.Name == "HasSingletonAttribute"));
+
+            var constructorInfoTypeDefinition = yggdrasilAssembly.MainModule.GetType("Yggdrasil.Types.ConstructorInfo", true).Resolve();
+            var constructorInfoTypeDefinitionConstructor = constructorInfoTypeDefinition.Methods.Single(t => t.Name == ".ctor");
+            var constructorInfoParametersFieldDefinition = module.Import(constructorInfoTypeDefinition.Fields.Single(t => t.Name == "Parameters"));
+
+            var constructorParameterTypeDefinition = yggdrasilAssembly.MainModule.GetType("Yggdrasil.Types.ConstructorParameter", true).Resolve();
+            var constructorParameterTypeDefinitionConstructor = constructorParameterTypeDefinition.Methods.Single(t => t.Name == ".ctor");
+            var constructorParameterTypeFieldDefinition = module.Import(constructorParameterTypeDefinition.Fields.Single(t => t.Name == "Type"));
+            var constructorParameterNameFieldDefinition = module.Import(constructorParameterTypeDefinition.Fields.Single(t => t.Name == "Name"));
+
+            var typeInfoArrayTypeReference = new ArrayType(module.Import(typeInfoTypeDefinition));
+            var constructorInfoArrayTypeReference = new ArrayType(module.Import(constructorInfoTypeDefinition));
+            var constructorParameterArrayTypeReference = new ArrayType(module.Import(constructorParameterTypeDefinition));
+
+            var allTypesFieldDefinition = new FieldDefinition("AllTypes", FieldAttributes.Public | FieldAttributes.Static, typeInfoArrayTypeReference);
+            typeMetaData.Fields.Add(allTypesFieldDefinition);
             
             constructor.Body.InitLocals = true;
 
+            var typeTypeReference = assemblyDefinition.MainModule.GetType("System.Type", true);
             var typeTypeDefinition = typeTypeReference.Resolve();
             var getTypeFromHandleMethod = typeTypeDefinition.Methods.Single(m=>m.Name == "GetTypeFromHandle");
 
-            var typeInfoArrayTypeReference = new ArrayType(typeInfoTypeDefinition);
 
             var il = constructor.Body.GetILProcessor();
 
-            constructor.Body.Variables.Add(new VariableDefinition("typeInfos",typeInfoArrayTypeReference));
+            constructor.Body.Variables.Add(new VariableDefinition("typeInfos",module.Import(typeInfoArrayTypeReference)));
+            constructor.Body.Variables.Add(new VariableDefinition(module.Import(typeInfoTypeDefinition)));
+            constructor.Body.Variables.Add(new VariableDefinition("constructorInfos", module.Import(constructorInfoArrayTypeReference)));
+            constructor.Body.Variables.Add(new VariableDefinition(module.Import(constructorInfoTypeDefinition)));
+            var parametersVariable = new VariableDefinition("parameters", module.Import(constructorParameterArrayTypeReference));
+            constructor.Body.Variables.Add(parametersVariable);
+            var parameterVariable = new VariableDefinition("parameter", module.Import(constructorParameterTypeDefinition));
+            constructor.Body.Variables.Add(parameterVariable);
             il.Append(Instruction.Create(OpCodes.Nop));
             il.Append(Instruction.Create(OpCodes.Ldc_I4, types.Count()));
-            il.Append(Instruction.Create(OpCodes.Newarr, typeTypeReference));
-            il.Append(Instruction.Create(OpCodes.Stloc_1));
+            il.Append(Instruction.Create(OpCodes.Newarr, module.Import(typeTypeReference)));
+            il.Append(Instruction.Create(OpCodes.Stloc_0));
+
 
             var typeIndex = 0;
             foreach (var typeDefinition in types)
             {
-                il.Append(Instruction.Create(OpCodes.Ldloc_1));
-                il.Append(Instruction.Create(OpCodes.Ldc_I4, typeIndex));
-                il.Append(Instruction.Create(OpCodes.Newobj, typeInfoTypeDefinitionConstructor));
-                il.Append(Instruction.Create(OpCodes.Stloc_0));
                 il.Append(Instruction.Create(OpCodes.Ldloc_0));
+                il.Append(Instruction.Create(OpCodes.Ldc_I4, typeIndex));
+                il.Append(Instruction.Create(OpCodes.Newobj, module.Import(typeInfoTypeDefinitionConstructor)));
+                il.Append(Instruction.Create(OpCodes.Stloc_1));
+
+                il.Append(Instruction.Create(OpCodes.Ldloc_1));
                 il.Append(Instruction.Create(OpCodes.Ldtoken, module.Import(typeDefinition)));
                 il.Append(Instruction.Create(OpCodes.Call, module.Import(getTypeFromHandleMethod)));
-                il.Append(Instruction.Create(OpCodes.Stfld, typeFieldDefinition));
+                il.Append(Instruction.Create(OpCodes.Stfld, typeInfoTypeFieldDefinition));
 
-                il.Append(Instruction.Create(OpCodes.Ldloc_0));
+                il.Append(Instruction.Create(OpCodes.Ldloc_1));
                 il.Append(Instruction.Create(OpCodes.Ldstr, typeDefinition.Namespace));
-                il.Append(Instruction.Create(OpCodes.Stfld, namespaceFieldDefinition));
-
-                il.Append(Instruction.Create(OpCodes.Ldloc_0));
-                il.Append(Instruction.Create(OpCodes.Ldc_I4, typeDefinition.IsValueType ? 1 : 0));
-                il.Append(Instruction.Create(OpCodes.Stfld, isValueFieldDefinition));
-
-                il.Append(Instruction.Create(OpCodes.Ldloc_0));
-                il.Append(Instruction.Create(OpCodes.Ldc_I4, typeDefinition.IsInterface ? 1 : 0));
-                il.Append(Instruction.Create(OpCodes.Stfld, isInterfaceFieldDefinition));
+                il.Append(Instruction.Create(OpCodes.Stfld, typeInfoNamespaceFieldDefinition));
 
                 var hasSingleton = false;
                 if (typeDefinition.HasCustomAttributes)
@@ -150,60 +143,83 @@ namespace Yggdrasil.PostBuild
                     }
                 }
 
-                il.Append(Instruction.Create(OpCodes.Ldloc_0));
+                il.Append(Instruction.Create(OpCodes.Ldloc_1));
                 il.Append(Instruction.Create(OpCodes.Ldc_I4, hasSingleton ? 1 : 0));
-                il.Append(Instruction.Create(OpCodes.Stfld, hasSingletonAttributeFieldDefinition));
+                il.Append(Instruction.Create(OpCodes.Stfld, typeInfoHasSingletonAttributeFieldDefinition));
 
-                il.Append(Instruction.Create(OpCodes.Ldloc_0));
+                var constructors = typeDefinition.Methods.Where(t => t.Name == ".ctor").ToArray();
+
+                il.Append(Instruction.Create(OpCodes.Ldc_I4, constructors.Length));
+                il.Append(Instruction.Create(OpCodes.Newarr, module.Import(constructorInfoTypeDefinition)));
+                il.Append(Instruction.Create(OpCodes.Stloc_2));
+
+                
+                var constructorIndex = 0;
+                foreach (var constructorMethodDefinition in constructors )
+                {
+                    il.Append(Instruction.Create(OpCodes.Ldloc_2));
+                    il.Append(Instruction.Create(OpCodes.Ldc_I4, constructorIndex));
+                    il.Append(Instruction.Create(OpCodes.Newobj, module.Import(constructorInfoTypeDefinitionConstructor)));
+                    il.Append(Instruction.Create(OpCodes.Stloc_3));
+
+                    il.Append(Instruction.Create(OpCodes.Ldc_I4, constructorMethodDefinition.Parameters.Count()));
+                    il.Append(Instruction.Create(OpCodes.Newarr, module.Import(constructorParameterTypeDefinition)));
+                    il.Append(Instruction.Create(OpCodes.Stloc_S, parametersVariable));
+
+                    var parameterIndex = 0;
+                    foreach (var parameter in constructorMethodDefinition.Parameters)
+                    {
+                        il.Append(Instruction.Create(OpCodes.Ldloc, parametersVariable));
+                        il.Append(Instruction.Create(OpCodes.Ldc_I4, parameterIndex));
+
+                        il.Append(Instruction.Create(OpCodes.Newobj, module.Import(constructorParameterTypeDefinitionConstructor)));
+                        il.Append(Instruction.Create(OpCodes.Stloc_S, parameterVariable));
+
+                        il.Append(Instruction.Create(OpCodes.Ldloc_S, parameterVariable));
+                        il.Append(Instruction.Create(OpCodes.Ldstr, parameter.Name));
+                        il.Append(Instruction.Create(OpCodes.Stfld, constructorParameterNameFieldDefinition));
+
+                        il.Append(Instruction.Create(OpCodes.Ldloc_S, parameterVariable));
+                        il.Append(Instruction.Create(OpCodes.Ldtoken, module.Import(parameter.ParameterType)));
+                        il.Append(Instruction.Create(OpCodes.Call, module.Import(getTypeFromHandleMethod)));
+                        il.Append(Instruction.Create(OpCodes.Stfld, constructorParameterTypeFieldDefinition));
+
+                        il.Append(Instruction.Create(OpCodes.Ldloc, parameterVariable));
+                        il.Append(Instruction.Create(OpCodes.Stelem_Ref));
+                        parameterIndex++;
+                    }
+
+                    //il.Append(Instruction.Create(OpCodes.Ldloc_2));
+                    //il.Append(Instruction.Create(OpCodes.Ldc_I4, constructorIndex));
+                    //il.Append(Instruction.Create(OpCodes.Ldloc_S, parametersVariable));
+                    
+                    
+                    //il.Append(Instruction.Create(OpCodes.Stfld, constructorInfoParametersFieldDefinition));
+
+                    /*
+                    */
+
+
+                    il.Append(Instruction.Create(OpCodes.Ldloc_3));
+                    il.Append(Instruction.Create(OpCodes.Stelem_Ref));
+                    constructorIndex++;
+                }
+
+                //il.Append(Instruction.Create(OpCodes.Ldloc_1));
+                //il.Append(Instruction.Create(OpCodes.Ldloc_2));
+                //il.Append(Instruction.Create(OpCodes.Stsfld, typeInfoConstructorsFieldDefinition));
+
+
+
+                il.Append(Instruction.Create(OpCodes.Ldloc_1));
                 il.Append(Instruction.Create(OpCodes.Stelem_Ref));
+
                 typeIndex++;
             }
 
-            il.Append(Instruction.Create(OpCodes.Ldloc_1));
-            il.Append(Instruction.Create(OpCodes.Stsfld, typeFieldDefinition));
-        }
-
-
-
-        static void AddAllTypes(AssemblyDefinition assemblyDefinition, TypeDefinition typeMetaData, IEnumerable<TypeDefinition> types, MethodDefinition constructor)
-        {
-            var typeTypeReference = assemblyDefinition.MainModule.GetType("System.Type", true);
-
-            var typeArrayTypeReference = assemblyDefinition.MainModule.GetType("System.Type[]", true);
-            var allTypesFieldDefinition = new FieldDefinition("AllTypes", FieldAttributes.Public | FieldAttributes.Static, typeArrayTypeReference);
-            typeMetaData.Fields.Add(allTypesFieldDefinition);
-
-            constructor.Body.InitLocals = true;
-
-            var il = constructor.Body.GetILProcessor();
-
-            constructor.Body.Variables.Add(new VariableDefinition("types", typeArrayTypeReference));
-            il.Append(Instruction.Create(OpCodes.Nop));
-            il.Append(Instruction.Create(OpCodes.Ldc_I4, types.Count()));
-            il.Append(Instruction.Create(OpCodes.Newarr, typeTypeReference));
-            il.Append(Instruction.Create(OpCodes.Stloc_0));
-
-            var typeTypeDefinition = typeTypeReference.Resolve();
-            var getTypeFromHandleMethod = typeTypeDefinition.Methods.Single(m=>m.Name == "GetTypeFromHandle");
-            var module = assemblyDefinition.MainModule;
-            module.Import(typeTypeDefinition);
-            module.Import(getTypeFromHandleMethod);
-
-            var typeIndex = 0;
-            foreach( var typeDefinition in types ) 
-            {
-                il.Append(Instruction.Create(OpCodes.Ldloc_0));
-                il.Append(Instruction.Create(OpCodes.Ldc_I4, typeIndex));
-                il.Append(Instruction.Create(OpCodes.Ldtoken, module.Import(typeDefinition)));
-                il.Append(Instruction.Create(OpCodes.Call, module.Import(getTypeFromHandleMethod)));
-                il.Append(Instruction.Create(OpCodes.Stelem_Ref));
-
-                typeIndex++;
-            }
 
             il.Append(Instruction.Create(OpCodes.Ldloc_0));
             il.Append(Instruction.Create(OpCodes.Stsfld, allTypesFieldDefinition));
-
         }
 
         static IEnumerable<TypeDefinition> GetAllTypes(AssemblyDefinition assemblyDefinition)
@@ -227,5 +243,47 @@ namespace Yggdrasil.PostBuild
 
             return types;
         }
+
+        static void AddAllTypes(AssemblyDefinition assemblyDefinition, TypeDefinition typeMetaData, IEnumerable<TypeDefinition> types, MethodDefinition constructor)
+        {
+            var typeTypeReference = assemblyDefinition.MainModule.GetType("System.Type", true);
+
+            var typeArrayTypeReference = assemblyDefinition.MainModule.GetType("System.Type[]", true);
+            var allTypesFieldDefinition = new FieldDefinition("AllTypes", FieldAttributes.Public | FieldAttributes.Static, typeArrayTypeReference);
+            typeMetaData.Fields.Add(allTypesFieldDefinition);
+
+            constructor.Body.InitLocals = true;
+
+            var il = constructor.Body.GetILProcessor();
+
+            constructor.Body.Variables.Add(new VariableDefinition("types", typeArrayTypeReference));
+            il.Append(Instruction.Create(OpCodes.Nop));
+            il.Append(Instruction.Create(OpCodes.Ldc_I4, types.Count()));
+            il.Append(Instruction.Create(OpCodes.Newarr, typeTypeReference));
+            il.Append(Instruction.Create(OpCodes.Stloc_0));
+
+            var typeTypeDefinition = typeTypeReference.Resolve();
+            var getTypeFromHandleMethod = typeTypeDefinition.Methods.Single(m => m.Name == "GetTypeFromHandle");
+            var module = assemblyDefinition.MainModule;
+            module.Import(typeTypeDefinition);
+            module.Import(getTypeFromHandleMethod);
+
+            var typeIndex = 0;
+            foreach (var typeDefinition in types)
+            {
+                il.Append(Instruction.Create(OpCodes.Ldloc_0));
+                il.Append(Instruction.Create(OpCodes.Ldc_I4, typeIndex));
+                il.Append(Instruction.Create(OpCodes.Ldtoken, module.Import(typeDefinition)));
+                il.Append(Instruction.Create(OpCodes.Call, module.Import(getTypeFromHandleMethod)));
+                il.Append(Instruction.Create(OpCodes.Stelem_Ref));
+
+                typeIndex++;
+            }
+
+            il.Append(Instruction.Create(OpCodes.Ldloc_0));
+            il.Append(Instruction.Create(OpCodes.Stsfld, allTypesFieldDefinition));
+
+        }
+
     }
 }
