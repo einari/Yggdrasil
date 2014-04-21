@@ -7,9 +7,40 @@ namespace Yggdrasil.Microframework.TestApp
     {
     }
 
+    public class TypeInfo
+    {
+        public Type Type;
+        public bool IsValueType;
+        public bool IsInterface;
+        public int ConstructorCount;
+    }
+
     public class Something
     {
-        public static string Hello = "World";
+        public static Type[] Hello;
+        public static TypeInfo[] Types;
+
+        static Something()
+        {
+            Hello = new[] {
+                typeof(ISomething),
+                typeof(Something)
+            };
+
+
+            Types = new [] {
+                new TypeInfo { Type = typeof(ISomething), IsValueType = true, IsInterface = true, ConstructorCount = 0 },
+                new TypeInfo { Type = typeof(Something), IsValueType = false, IsInterface = false, ConstructorCount = 3 },
+                new TypeInfo { Type = typeof(ISomething), IsValueType = true, IsInterface = true, ConstructorCount = 0 },
+                new TypeInfo { Type = typeof(Something), IsValueType = false, IsInterface = false, ConstructorCount = 3 },
+                new TypeInfo { Type = typeof(ISomething), IsValueType = true, IsInterface = true, ConstructorCount = 0 },
+                new TypeInfo { Type = typeof(Something), IsValueType = false, IsInterface = false, ConstructorCount = 3 }
+
+            };
+
+            
+        }
+
     }
 
 
