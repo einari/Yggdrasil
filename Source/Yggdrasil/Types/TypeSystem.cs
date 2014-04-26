@@ -7,6 +7,14 @@ namespace Yggdrasil.Types
     {
         Dictionary<Type, TypeDefinition> _typeDefinitions = new Dictionary<Type, TypeDefinition>();
 
+        ITypeDiscoverer _typeDiscoverer;
+
+        public TypeSystem(ITypeDiscoverer typeDiscoverer)
+        {
+            _typeDiscoverer = typeDiscoverer;
+        }
+
+
         public ITypeDefinition GetDefinitionFor(Type type)
         {
             if (_typeDefinitions.ContainsKey(type)) return _typeDefinitions[type];
@@ -18,7 +26,7 @@ namespace Yggdrasil.Types
 
         public Type GetType(string fullName)
         {
-            return Type.GetType(fullName);
+            return _typeDiscoverer.FindByName(fullName);
         }
     }
 }

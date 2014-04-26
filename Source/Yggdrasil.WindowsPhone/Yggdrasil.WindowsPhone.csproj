@@ -1,0 +1,212 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{181A3F05-E679-4AC5-9BED-4B581E74C8F7}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Yggdrasil.WindowsPhone</RootNamespace>
+    <AssemblyName>Yggdrasil.WindowsPhone</AssemblyName>
+    <DefaultLanguage>en-US</DefaultLanguage>
+    <TargetPlatformVersion>8.1</TargetPlatformVersion>
+    <MinimumVisualStudioVersion>12</MinimumVisualStudioVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{76F1466A-8B6D-4E39-A767-685A06062A39};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_PHONE_APP</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_PHONE_APP</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\ARM\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_PHONE_APP</DefineConstants>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>full</DebugType>
+    <PlatformTarget>ARM</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|ARM'">
+    <OutputPath>bin\ARM\Release\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_PHONE_APP</DefineConstants>
+    <Optimize>true</Optimize>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>ARM</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_PHONE_APP</DefineConstants>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_PHONE_APP</DefineConstants>
+    <Optimize>true</Optimize>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\Yggdrasil\Activation\ActivationManager.cs">
+      <Link>Activation\ActivationManager.cs</Link>
+    </Compile>
+    <Compile Include="..\Yggdrasil\Activation\ActivationStrategyConstructorMissing.cs">
+      <Link>Activation\ActivationStrategyConstructorMissing.cs</Link>
+    </Compile>
+    <Compile Include="..\Yggdrasil\Activation\ComplexStrategy.cs">
+      <Link>Activation\ComplexStrategy.cs</Link>
+    </Compile>
+    <Compile Include="..\Yggdrasil\Activation\ConstantStrategy.cs">
+      <Link>Activation\ConstantStrategy.cs</Link>
+    </Compile>
+    <Compile Include="..\Yggdrasil\Activation\DefaultStrategy.cs">
+      <Link>Activation\DefaultStrategy.cs</Link>
+    </Compile>
+    <Compile Include="..\Yggdrasil\Activation\IActivationManager.cs">
+      <Link>Activation\IActivationManager.cs</Link>
+    </Compile>
+    <Compile Include="..\Yggdrasil\Activation\IScope.cs">
+      <Link>Activation\IScope.cs</Link>
+    </Compile>
+    <Compile Include="..\Yggdrasil\Activation\IStrategy.cs">
+      <Link>Activation\IStrategy.cs</Link>
+    </Compile>
+    <Compile Include="..\Yggdrasil\Activation\IStrategyActivator.cs">
+      <Link>Activation\IStrategyActivator.cs</Link>
+    </Compile>
+    <Compile Include="..\Yggdrasil\Activation\MissingTargetTypeException.cs">
+      <Link>Activation\MissingTargetTypeException.cs</Link>
+    </Compile>
+    <Compile Include="..\Yggdrasil\Activation\SingletonScope.cs">
+      <Link>Activation\SingletonScope.cs</Link>
+    </Compile>
+    <Compile Include="..\Yggdrasil\Activation\StrategyActivator.cs">
+      <Link>Activation\StrategyActivator.cs</Link>
+    </Compile>
+    <Compile Include="..\Yggdrasil\Activation\UnableToActivateException.cs">
+      <Link>Activation\UnableToActivateException.cs</Link>
+    </Compile>
+    <Compile Include="..\Yggdrasil\AssemblyLocator.cs">
+      <Link>AssemblyLocator.cs</Link>
+    </Compile>
+    <Compile Include="..\Yggdrasil\Binding\BindingDiscoverer.cs">
+      <Link>Binding\BindingDiscoverer.cs</Link>
+    </Compile>
+    <Compile Include="..\Yggdrasil\Binding\BindingManager.cs">
+      <Link>Binding\BindingManager.cs</Link>
+    </Compile>
+    <Compile Include="..\Yggdrasil\Binding\DefaultBindingConvention.cs">
+      <Link>Binding\DefaultBindingConvention.cs</Link>
+    </Compile>
+    <Compile Include="..\Yggdrasil\Binding\IBinding.cs">
+      <Link>Binding\IBinding.cs</Link>
+    </Compile>
+    <Compile Include="..\Yggdrasil\Binding\IBindingConvention.cs">
+      <Link>Binding\IBindingConvention.cs</Link>
+    </Compile>
+    <Compile Include="..\Yggdrasil\Binding\IBindingDiscoverer.cs">
+      <Link>Binding\IBindingDiscoverer.cs</Link>
+    </Compile>
+    <Compile Include="..\Yggdrasil\Binding\IBindingManager.cs">
+      <Link>Binding\IBindingManager.cs</Link>
+    </Compile>
+    <Compile Include="..\Yggdrasil\Binding\SelfBindingConvention.cs">
+      <Link>Binding\SelfBindingConvention.cs</Link>
+    </Compile>
+    <Compile Include="..\Yggdrasil\Binding\StandardBinding.cs">
+      <Link>Binding\StandardBinding.cs</Link>
+    </Compile>
+    <Compile Include="..\Yggdrasil\Container.cs">
+      <Link>Container.cs</Link>
+    </Compile>
+    <Compile Include="..\Yggdrasil\ContainerContext.cs">
+      <Link>ContainerContext.cs</Link>
+    </Compile>
+    <Compile Include="..\Yggdrasil\Dispatcher.cs">
+      <Link>Dispatcher.cs</Link>
+    </Compile>
+    <Compile Include="..\Yggdrasil\IAssemblyLocator.cs">
+      <Link>IAssemblyLocator.cs</Link>
+    </Compile>
+    <Compile Include="..\Yggdrasil\IContainer.cs">
+      <Link>IContainer.cs</Link>
+    </Compile>
+    <Compile Include="..\Yggdrasil\IDispatcher.cs">
+      <Link>IDispatcher.cs</Link>
+    </Compile>
+    <Compile Include="..\Yggdrasil\In.cs">
+      <Link>In.cs</Link>
+    </Compile>
+    <Compile Include="..\Yggdrasil\ITypeDiscoverer.cs">
+      <Link>ITypeDiscoverer.cs</Link>
+    </Compile>
+    <Compile Include="..\Yggdrasil\SingletonAttribute.cs">
+      <Link>SingletonAttribute.cs</Link>
+    </Compile>
+    <Compile Include="..\Yggdrasil\TypeDiscoverer.cs">
+      <Link>TypeDiscoverer.cs</Link>
+    </Compile>
+    <Compile Include="..\Yggdrasil\Types\ITypeDefinition.cs">
+      <Link>Types\ITypeDefinition.cs</Link>
+    </Compile>
+    <Compile Include="..\Yggdrasil\Types\ITypeSystem.cs">
+      <Link>Types\ITypeSystem.cs</Link>
+    </Compile>
+    <Compile Include="..\Yggdrasil\Types\TypeDefinition.cs">
+      <Link>Types\TypeDefinition.cs</Link>
+    </Compile>
+    <Compile Include="..\Yggdrasil\Types\TypeSystem.cs">
+      <Link>Types\TypeSystem.cs</Link>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '12.0' ">
+    <VisualStudioVersion>12.0</VisualStudioVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(TargetPlatformIdentifier)' == '' ">
+    <TargetPlatformIdentifier>WindowsPhoneApp</TargetPlatformIdentifier>
+  </PropertyGroup>
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\WindowsXaml\v$(VisualStudioVersion)\Microsoft.Windows.UI.Xaml.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

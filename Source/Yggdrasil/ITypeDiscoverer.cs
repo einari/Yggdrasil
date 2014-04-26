@@ -8,6 +8,12 @@ namespace Yggdrasil
 	public interface ITypeDiscoverer
 	{
 		/// <summary>
+		/// Find a type by its full name
+		/// </summary>
+		/// <returns>Type found</returns>
+        Type FindByName(string fullName);
+
+		/// <summary>
 		/// Find a single implementation of a basetype
 		/// </summary>
 		/// <param name="T">Basetype to find for</param>

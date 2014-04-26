@@ -11,7 +11,7 @@ namespace Yggdrasil.Types
 
         public TypeDefinition(Type type)
         {
-            Type = Type;
+            Type = type;
             _typeInfo = type.GetTypeInfo();
         }
 

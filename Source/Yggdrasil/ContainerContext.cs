@@ -34,14 +34,14 @@ namespace Yggdrasil
 			var assemblyLocator = new AssemblyLocator();
 			var typeDiscoverer = new TypeDiscoverer(assemblyLocator);
 #endif
-            var typeSystem = new TypeSystem();
+            var typeSystem = new TypeSystem(typeDiscoverer);
 
             _current = new Container(typeSystem);
 
 			var bindingManager = new BindingManager(typeSystem);
 			var strategyActivator = new StrategyActivator(_current);
 			var activationManager = new ActivationManager(typeDiscoverer, strategyActivator);
-			var bindingDiscoverer = new BindingDiscoverer(activationManager, typeSystem, typeDiscoverer);
+			var bindingDiscoverer = new BindingDiscoverer(_current, activationManager, typeSystem, typeDiscoverer);
 
 			_current.Initialize(bindingManager, bindingDiscoverer, activationManager);
 		}

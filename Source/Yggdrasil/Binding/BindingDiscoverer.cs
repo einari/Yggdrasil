@@ -18,12 +18,12 @@ namespace Yggdrasil.Binding
 #endif
 		IActivationManager _activationManager;
 
-        public BindingDiscoverer(IActivationManager activationManager, ITypeSystem typeSystem, ITypeDiscoverer typeDiscoverer)
+        public BindingDiscoverer(IContainer container, IActivationManager activationManager, ITypeSystem typeSystem, ITypeDiscoverer typeDiscoverer)
 		{
 			var conventionTypes = typeDiscoverer.FindMultiple(typeof(IBindingConvention));
             foreach (var conventionType in conventionTypes)
             {
-                var instance = typeSystem.GetDefinitionFor(conventionType).CreateInstance();
+                var instance = typeSystem.GetDefinitionFor(conventionType).CreateInstance(container);
                 _conventions.Add((IBindingConvention)instance);
             }
 
