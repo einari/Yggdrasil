@@ -13,5 +13,10 @@ namespace Yggdrasil
         {
             throw new NotImplementedException();
         }
+
+        public Type FindByName(string fullName)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

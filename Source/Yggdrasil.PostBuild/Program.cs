@@ -3,6 +3,7 @@ using System.Linq;
 using System.IO;
 using System.Collections.Generic;
 using Mono.Cecil.Cil;
+using System;
 
 namespace Yggdrasil.PostBuild
 {
@@ -10,13 +11,36 @@ namespace Yggdrasil.PostBuild
     {
         static void Main(string[] args)
         {
-            var targetDir = @"C:\projects\yggdrasil\Source\Yggdrasil.Microframework.TestApp\bin\Debug\";
+            var file = "Yggdrasil.Microframework.TestApp.exe";
 
+
+            var targetDir = @"C:\projects\yggdrasil\Source\Yggdrasil.Microframework.TestApp\bin\Debug\";
             Directory.SetCurrentDirectory(targetDir);
 
-            var file = "Yggdrasil.Microframework.TestApp.exe";
-            var assemblyDefinition = AssemblyDefinition.ReadAssembly(file);
+            var yggdrasilAssembly = AssemblyDefinition.ReadAssembly("Yggdrasil.dll");
+            yggdrasilAssembly.MainModule.AssemblyReferences.Add(yggdrasilAssembly.Name);
+
+            GenerateTypeInformation(yggdrasilAssembly, file);
             
+            targetDir = @"C:\projects\yggdrasil\Source\Yggdrasil.Microframework.TestApp\bin\Debug\be\";
+            Directory.SetCurrentDirectory(targetDir);
+            GenerateTypeInformation(yggdrasilAssembly, file);
+
+            targetDir = @"C:\projects\yggdrasil\Source\Yggdrasil.Microframework.TestApp\bin\Debug\le\";
+            Directory.SetCurrentDirectory(targetDir);
+            GenerateTypeInformation(yggdrasilAssembly, file);
+        }
+
+        private static void GenerateTypeInformation(AssemblyDefinition yggdrasilAssembly, string file)
+        {
+            Console.WriteLine("Updating : " + file);
+            var readerParameters = new ReaderParameters
+            {
+                ReadSymbols = true
+            };
+
+            var assemblyDefinition = AssemblyDefinition.ReadAssembly(file);
+
 
             var typeMetaData = new TypeDefinition("Yggdrasil", "_TypeMetaData", TypeAttributes.Class | TypeAttributes.Public);
             assemblyDefinition.MainModule.Types.Add(typeMetaData);
@@ -24,17 +48,21 @@ namespace Yggdrasil.PostBuild
             var types = GetAllTypes(assemblyDefinition);
 
             var constructor = GetStaticConstructor(assemblyDefinition, typeMetaData);
-            AddTypeDefinitions(assemblyDefinition, typeMetaData, types, constructor);
+            AddTypeDefinitions(yggdrasilAssembly, assemblyDefinition, typeMetaData, types, constructor);
 
             // Generate array with configuration for all types
 
             var il = constructor.Body.GetILProcessor();
             il.Append(Instruction.Create(OpCodes.Ret));
 
-            
 
-            assemblyDefinition.Write(file+"_modified");
-            
+
+            Console.WriteLine("Done updating : " + file + " at " + Directory.GetCurrentDirectory());
+            var writerParameters = new WriterParameters
+            {
+                WriteSymbols = true
+            };
+            assemblyDefinition.Write(file, writerParameters); //+"_modified");
         }
 
         private static MethodDefinition GetStaticConstructor(AssemblyDefinition assemblyDefinition, TypeDefinition typeMetaData)
@@ -59,13 +87,11 @@ namespace Yggdrasil.PostBuild
             return false;
         }
 
-        static void AddTypeDefinitions(AssemblyDefinition assemblyDefinition, TypeDefinition typeMetaData, IEnumerable<TypeDefinition> types, MethodDefinition constructor)
+        static void AddTypeDefinitions(AssemblyDefinition yggdrasilAssembly, AssemblyDefinition assemblyDefinition, TypeDefinition typeMetaData, IEnumerable<TypeDefinition> types, MethodDefinition constructor)
         {
             var module = assemblyDefinition.MainModule;
 
             
-            var yggdrasilAssembly = AssemblyDefinition.ReadAssembly("Yggdrasil.dll");
-            yggdrasilAssembly.MainModule.AssemblyReferences.Add(yggdrasilAssembly.Name);
 
             var typeInfoTypeDefinition = yggdrasilAssembly.MainModule.GetType("Yggdrasil.Types.TypeInfo", true).Resolve();
             var typeInfoTypeDefinitionConstructor = typeInfoTypeDefinition.Methods.Single(t => t.Name == ".ctor");
@@ -99,34 +125,44 @@ namespace Yggdrasil.PostBuild
 
             var il = constructor.Body.GetILProcessor();
 
-            constructor.Body.Variables.Add(new VariableDefinition("typeInfos",module.Import(typeInfoArrayTypeReference)));
-            constructor.Body.Variables.Add(new VariableDefinition(module.Import(typeInfoTypeDefinition)));
-            constructor.Body.Variables.Add(new VariableDefinition("constructorInfos", module.Import(constructorInfoArrayTypeReference)));
-            constructor.Body.Variables.Add(new VariableDefinition(module.Import(constructorInfoTypeDefinition)));
+            var typeInfosVariable = new VariableDefinition("typeInfos",module.Import(typeInfoArrayTypeReference));
+            constructor.Body.Variables.Add(typeInfosVariable);
+
+            var typeInfoTypeDefinitionVariable = new VariableDefinition("typeInfoTypeDefinition", module.Import(typeInfoTypeDefinition));
+            constructor.Body.Variables.Add(typeInfoTypeDefinitionVariable);
+
+            var constructorInfosVariable = new VariableDefinition("constructorInfos", module.Import(constructorInfoArrayTypeReference));
+            constructor.Body.Variables.Add(constructorInfosVariable);
+
+            var constructorInfoTypeDefinitionVariable = new VariableDefinition("constructorInfoTypeDefinition", module.Import(constructorInfoTypeDefinition));
+            constructor.Body.Variables.Add(constructorInfoTypeDefinitionVariable);
+
             var parametersVariable = new VariableDefinition("parameters", module.Import(constructorParameterArrayTypeReference));
             constructor.Body.Variables.Add(parametersVariable);
+
             var parameterVariable = new VariableDefinition("parameter", module.Import(constructorParameterTypeDefinition));
             constructor.Body.Variables.Add(parameterVariable);
+
             il.Append(Instruction.Create(OpCodes.Nop));
             il.Append(Instruction.Create(OpCodes.Ldc_I4, types.Count()));
             il.Append(Instruction.Create(OpCodes.Newarr, module.Import(typeTypeReference)));
-            il.Append(Instruction.Create(OpCodes.Stloc_0));
+            il.Append(Instruction.Create(OpCodes.Stloc_S, typeInfosVariable));
 
 
             var typeIndex = 0;
             foreach (var typeDefinition in types)
             {
-                il.Append(Instruction.Create(OpCodes.Ldloc_0));
+                il.Append(Instruction.Create(OpCodes.Ldloc_S, typeInfosVariable));
                 il.Append(Instruction.Create(OpCodes.Ldc_I4, typeIndex));
                 il.Append(Instruction.Create(OpCodes.Newobj, module.Import(typeInfoTypeDefinitionConstructor)));
-                il.Append(Instruction.Create(OpCodes.Stloc_1));
+                il.Append(Instruction.Create(OpCodes.Stloc, typeInfoTypeDefinitionVariable));
 
-                il.Append(Instruction.Create(OpCodes.Ldloc_1));
+                il.Append(Instruction.Create(OpCodes.Ldloc, typeInfoTypeDefinitionVariable));
                 il.Append(Instruction.Create(OpCodes.Ldtoken, module.Import(typeDefinition)));
                 il.Append(Instruction.Create(OpCodes.Call, module.Import(getTypeFromHandleMethod)));
                 il.Append(Instruction.Create(OpCodes.Stfld, typeInfoTypeFieldDefinition));
 
-                il.Append(Instruction.Create(OpCodes.Ldloc_1));
+                il.Append(Instruction.Create(OpCodes.Ldloc, typeInfoTypeDefinitionVariable));
                 il.Append(Instruction.Create(OpCodes.Ldstr, typeDefinition.Namespace));
                 il.Append(Instruction.Create(OpCodes.Stfld, typeInfoNamespaceFieldDefinition));
 
@@ -143,7 +179,7 @@ namespace Yggdrasil.PostBuild
                     }
                 }
 
-                il.Append(Instruction.Create(OpCodes.Ldloc_1));
+                il.Append(Instruction.Create(OpCodes.Ldloc, typeInfoTypeDefinitionVariable));
                 il.Append(Instruction.Create(OpCodes.Ldc_I4, hasSingleton ? 1 : 0));
                 il.Append(Instruction.Create(OpCodes.Stfld, typeInfoHasSingletonAttributeFieldDefinition));
 
@@ -151,35 +187,36 @@ namespace Yggdrasil.PostBuild
 
                 il.Append(Instruction.Create(OpCodes.Ldc_I4, constructors.Length));
                 il.Append(Instruction.Create(OpCodes.Newarr, module.Import(constructorInfoTypeDefinition)));
-                il.Append(Instruction.Create(OpCodes.Stloc_2));
+                il.Append(Instruction.Create(OpCodes.Stloc_S, constructorInfosVariable));
 
                 
                 var constructorIndex = 0;
                 foreach (var constructorMethodDefinition in constructors )
                 {
-                    il.Append(Instruction.Create(OpCodes.Ldloc_2));
+                    il.Append(Instruction.Create(OpCodes.Ldloc_S, constructorInfosVariable));
                     il.Append(Instruction.Create(OpCodes.Ldc_I4, constructorIndex));
                     il.Append(Instruction.Create(OpCodes.Newobj, module.Import(constructorInfoTypeDefinitionConstructor)));
-                    il.Append(Instruction.Create(OpCodes.Stloc_3));
+                    il.Append(Instruction.Create(OpCodes.Stloc, constructorInfoTypeDefinitionVariable));
 
+                    il.Append(Instruction.Create(OpCodes.Ldloc, constructorInfoTypeDefinitionVariable));
                     il.Append(Instruction.Create(OpCodes.Ldc_I4, constructorMethodDefinition.Parameters.Count()));
                     il.Append(Instruction.Create(OpCodes.Newarr, module.Import(constructorParameterTypeDefinition)));
                     il.Append(Instruction.Create(OpCodes.Stloc_S, parametersVariable));
+                    
 
                     var parameterIndex = 0;
                     foreach (var parameter in constructorMethodDefinition.Parameters)
                     {
-                        il.Append(Instruction.Create(OpCodes.Ldloc, parametersVariable));
+                        il.Append(Instruction.Create(OpCodes.Ldloc_S, parametersVariable));
                         il.Append(Instruction.Create(OpCodes.Ldc_I4, parameterIndex));
-
                         il.Append(Instruction.Create(OpCodes.Newobj, module.Import(constructorParameterTypeDefinitionConstructor)));
-                        il.Append(Instruction.Create(OpCodes.Stloc_S, parameterVariable));
+                        il.Append(Instruction.Create(OpCodes.Stloc, parameterVariable));
 
-                        il.Append(Instruction.Create(OpCodes.Ldloc_S, parameterVariable));
+                        il.Append(Instruction.Create(OpCodes.Ldloc, parameterVariable));
                         il.Append(Instruction.Create(OpCodes.Ldstr, parameter.Name));
                         il.Append(Instruction.Create(OpCodes.Stfld, constructorParameterNameFieldDefinition));
 
-                        il.Append(Instruction.Create(OpCodes.Ldloc_S, parameterVariable));
+                        il.Append(Instruction.Create(OpCodes.Ldloc, parameterVariable));
                         il.Append(Instruction.Create(OpCodes.Ldtoken, module.Import(parameter.ParameterType)));
                         il.Append(Instruction.Create(OpCodes.Call, module.Import(getTypeFromHandleMethod)));
                         il.Append(Instruction.Create(OpCodes.Stfld, constructorParameterTypeFieldDefinition));
@@ -189,36 +226,26 @@ namespace Yggdrasil.PostBuild
                         parameterIndex++;
                     }
 
-                    //il.Append(Instruction.Create(OpCodes.Ldloc_2));
-                    //il.Append(Instruction.Create(OpCodes.Ldc_I4, constructorIndex));
-                    //il.Append(Instruction.Create(OpCodes.Ldloc_S, parametersVariable));
-                    
-                    
-                    //il.Append(Instruction.Create(OpCodes.Stfld, constructorInfoParametersFieldDefinition));
+                    il.Append(Instruction.Create(OpCodes.Ldloc_S, parametersVariable));
+                    il.Append(Instruction.Create(OpCodes.Stfld, constructorInfoParametersFieldDefinition));
 
-                    /*
-                    */
-
-
-                    il.Append(Instruction.Create(OpCodes.Ldloc_3));
+                    il.Append(Instruction.Create(OpCodes.Ldloc, constructorInfoTypeDefinitionVariable));
                     il.Append(Instruction.Create(OpCodes.Stelem_Ref));
                     constructorIndex++;
                 }
 
-                //il.Append(Instruction.Create(OpCodes.Ldloc_1));
-                //il.Append(Instruction.Create(OpCodes.Ldloc_2));
-                //il.Append(Instruction.Create(OpCodes.Stsfld, typeInfoConstructorsFieldDefinition));
 
+                il.Append(Instruction.Create(OpCodes.Ldloc, typeInfoTypeDefinitionVariable));
+                il.Append(Instruction.Create(OpCodes.Ldloc_S, constructorInfosVariable));
+                il.Append(Instruction.Create(OpCodes.Stfld, typeInfoConstructorsFieldDefinition));
 
-
-                il.Append(Instruction.Create(OpCodes.Ldloc_1));
+                il.Append(Instruction.Create(OpCodes.Ldloc, typeInfoTypeDefinitionVariable));
                 il.Append(Instruction.Create(OpCodes.Stelem_Ref));
 
                 typeIndex++;
             }
 
-
-            il.Append(Instruction.Create(OpCodes.Ldloc_0));
+            il.Append(Instruction.Create(OpCodes.Ldloc_S, typeInfosVariable));
             il.Append(Instruction.Create(OpCodes.Stsfld, allTypesFieldDefinition));
         }
 
@@ -282,8 +309,6 @@ namespace Yggdrasil.PostBuild
 
             il.Append(Instruction.Create(OpCodes.Ldloc_0));
             il.Append(Instruction.Create(OpCodes.Stsfld, allTypesFieldDefinition));
-
         }
-
     }
 }
