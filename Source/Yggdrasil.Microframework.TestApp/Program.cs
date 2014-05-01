@@ -19,15 +19,21 @@ namespace Yggdrasil.Microframework.TestApp
     {
         public static void Main()
         {
+
             
             //var type = typeof(Yggdrasil.ContainerContext).Assembly.GetType("Yggdrasil._TypeMetaData");
 
-            var types = typeof(Program).Assembly.GetTypes();
-            foreach (var type in types)
+            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
             {
-                Debug.Print("Name : " + type.Name);
+                var types = assembly.GetTypes();
+                foreach (var type in types)
+                {
+                    if (type.Name.StartsWith("_"))
+                    {
+                        Debug.Print("Name : " + type.Name);
+                    }
+                }
             }
-
 
 
             //var container = Yggdrasil.ContainerContext.Current;

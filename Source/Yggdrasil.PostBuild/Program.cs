@@ -11,28 +11,29 @@ namespace Yggdrasil.PostBuild
     {
         static void Main(string[] args)
         {
-            var file = "Yggdrasil.Microframework.TestApp.exe";
-
-
             var targetDir = @"C:\projects\yggdrasil\Source\Yggdrasil.Microframework.TestApp\bin\Debug\";
+            GenerateTypeInformation(targetDir);
+            
+            targetDir = @"C:\projects\yggdrasil\Source\Yggdrasil.Microframework.TestApp\bin\Debug\be\";
+            GenerateTypeInformation(targetDir);
+            
+            targetDir = @"C:\projects\yggdrasil\Source\Yggdrasil.Microframework.TestApp\bin\Debug\le\";
+            GenerateTypeInformation(targetDir);
+        }
+
+        private static void GenerateTypeInformation(string targetDir)
+        {
             Directory.SetCurrentDirectory(targetDir);
+
+            var file = targetDir+"Yggdrasil.Microframework.TestApp.exe";
+            var yggdrasilFile = @"C:\projects\yggdrasil\Source\Yggdrasil.Microframework.TestApp\bin\Debug\Yggdrasil.dll";
+            var yggdrasilTargetFile = targetDir + "Yggdrasil.dll";
+            if( yggdrasilFile != yggdrasilTargetFile ) File.Copy(yggdrasilFile, yggdrasilTargetFile, true);
 
             var yggdrasilAssembly = AssemblyDefinition.ReadAssembly("Yggdrasil.dll");
             yggdrasilAssembly.MainModule.AssemblyReferences.Add(yggdrasilAssembly.Name);
 
-            GenerateTypeInformation(yggdrasilAssembly, file);
-            
-            targetDir = @"C:\projects\yggdrasil\Source\Yggdrasil.Microframework.TestApp\bin\Debug\be\";
-            Directory.SetCurrentDirectory(targetDir);
-            GenerateTypeInformation(yggdrasilAssembly, file);
 
-            targetDir = @"C:\projects\yggdrasil\Source\Yggdrasil.Microframework.TestApp\bin\Debug\le\";
-            Directory.SetCurrentDirectory(targetDir);
-            GenerateTypeInformation(yggdrasilAssembly, file);
-        }
-
-        private static void GenerateTypeInformation(AssemblyDefinition yggdrasilAssembly, string file)
-        {
             Console.WriteLine("Updating : " + file);
             var readerParameters = new ReaderParameters
             {
@@ -252,6 +253,7 @@ namespace Yggdrasil.PostBuild
         static IEnumerable<TypeDefinition> GetAllTypes(AssemblyDefinition assemblyDefinition)
         {
             var types = new List<TypeDefinition>();
+            types.AddRange(assemblyDefinition.MainModule.Types.Where(t => !t.FullName.Contains("<")));
 
             foreach (var assemblyReference in assemblyDefinition.MainModule.AssemblyReferences)
             {
