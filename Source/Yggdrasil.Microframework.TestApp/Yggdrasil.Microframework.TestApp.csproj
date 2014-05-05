@@ -29,6 +29,13 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+  </PropertyGroup>
+	<Target Name="AfterCompile">
+		<Message Text="Hello world from MSBuild"/>
+	</Target>
+
   <Import Project="$(NetMfTargetsBaseDir)$(TargetFrameworkVersion)\CSharp.Targets" />
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -57,4 +64,7 @@
       <Name>Yggdrasil.MicroFramework</Name>
     </ProjectReference>
   </ItemGroup>
+  <PropertyGroup>
+    <PostBuildEvent>C:\Projects\Yggdrasil\Source\Yggdrasil.PostBuild\bin\Debug\Yggdrasil.PostBuild.exe</PostBuildEvent>
+  </PropertyGroup>
 </Project>

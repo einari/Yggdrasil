@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using Microsoft.SPOT;
 using Yggdrasil.Types;
 
@@ -8,61 +9,8 @@ namespace Yggdrasil.Microframework.TestApp
     {
     }
 
-
     public class Something
     {
-        public static Type[] Hello;
-        public static TypeInfo[] Types;
-        public static ConstructorInfo[] c;
-
-        static Something()
-        {
-            Hello = new[] {
-                typeof(ISomething),
-                typeof(Something)
-            };
-
-            c = new[] 
-                    { 
-                        new ConstructorInfo 
-                        { 
-                            Parameters = new [] 
-                            { 
-                                new ConstructorParameter 
-                                { 
-                                    Type = typeof(string), 
-                                    Name = "blah" 
-                                } 
-                            } 
-                        } 
-                    }; 
-
-
-            Types = new[] {
-                new TypeInfo { 
-                    Type = typeof(ISomething), 
-                    HasSingletonAttribute = true, 
-                    Constructors = new[] 
-                    { 
-                        new ConstructorInfo 
-                        { 
-                            Parameters = new [] 
-                            { 
-                                new ConstructorParameter 
-                                { 
-                                    Type = typeof(string), 
-                                    Name = "blah" 
-                                } 
-                            } 
-                        } 
-                    } 
-                },
-                new TypeInfo { Type = typeof(Something), HasSingletonAttribute = true  },
-
-            };
-
-
-        }
 
     }
 
@@ -71,8 +19,25 @@ namespace Yggdrasil.Microframework.TestApp
     {
         public static void Main()
         {
-            var container = Yggdrasil.ContainerContext.Current;
-            var something = container.Get(typeof(ISomething)) as Something;
+
+            
+            //var type = typeof(Yggdrasil.ContainerContext).Assembly.GetType("Yggdrasil._TypeMetaData");
+
+            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                var types = assembly.GetTypes();
+                foreach (var type in types)
+                {
+                    if (type.Name.StartsWith("_"))
+                    {
+                        Debug.Print("Name : " + type.Name);
+                    }
+                }
+            }
+
+
+            //var container = Yggdrasil.ContainerContext.Current;
+            //var something = container.Get(typeof(ISomething)) as Something;
 
 
             Debug.Print(

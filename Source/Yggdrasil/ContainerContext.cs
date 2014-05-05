@@ -30,11 +30,13 @@ namespace Yggdrasil
 
 #if(NETMF)
             var typeDiscoverer = new TypeDiscoverer();
+            var typeSystem = new TypeSystem();
 #else
 			var assemblyLocator = new AssemblyLocator();
 			var typeDiscoverer = new TypeDiscoverer(assemblyLocator);
-#endif
             var typeSystem = new TypeSystem(typeDiscoverer);
+#endif
+
 
             _current = new Container(typeSystem);
 
