@@ -27,7 +27,14 @@ namespace Yggdrasil.Types
         public bool HasDefaultConstructor { get { return _typeInfo.DeclaredConstructors.Any(c => c.GetParameters().Length == 0); } }
         public bool HasSingletonAttribute { get { return _typeInfo.GetCustomAttributes(typeof(SingletonAttribute), true).Count() == 1; } }
 
-        public bool HasConstructorParametersValueTypes { get { return _typeInfo.DeclaredConstructors.Where(c => c.GetParameters().Any(p => p.ParameterType.GetTypeInfo().IsValueType)).Count() >= 0; } }
+        public bool HasConstructorParametersValueTypes
+        {
+            get
+            {
+                var has = _typeInfo.DeclaredConstructors.Where(c => c.GetParameters().Any(p => p.ParameterType.GetTypeInfo().IsValueType)).Count() > 0;
+                return has;
+            }
+        }
 
         public bool HasConstructorWithParameterTypes(params Type[] parameterTypes)
         {
