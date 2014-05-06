@@ -26,7 +26,7 @@ namespace Yggdrasil.Types
 
         public Type GetType(string fullName)
         {
-            return _typeDiscoverer.FindByName(fullName);
+            return _typeDiscoverer.FindByFullName(fullName);
         }
     }
 }

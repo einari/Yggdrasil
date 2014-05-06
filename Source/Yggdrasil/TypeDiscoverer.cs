@@ -18,7 +18,13 @@ namespace Yggdrasil
 			CollectTypes();
 		}
 
-        public Type FindByName(string name)
+        public Type[] FindAnyByName(string name)
+        {
+            var types = _types.Where(t => t.Name == name).ToArray();
+            return types;
+        }
+
+        public Type FindByFullName(string name)
         {
             var type = _types.Where(t => t.FullName == name).SingleOrDefault();
             return type;
@@ -62,6 +68,5 @@ namespace Yggdrasil
             if (typesFound.Length > 1)
                 throw new ArgumentException("More than one type found for '" + type.FullName + "'");
         }
-
     }
 }
