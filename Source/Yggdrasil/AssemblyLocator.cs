@@ -63,14 +63,7 @@ namespace Yggdrasil
             var assemblies = new List<Assembly>();
 
             IEnumerable<StorageFile>    files = null;
-
-            var operation = folder.GetFilesAsync();
-            operation.Completed = async (r, s) => {
-                var result = await r;
-                files = result;
-            };
-
-            while (files == null) ;
+            folder.GetFilesAsync().AsTask().ContinueWith(f => files = f.Result).Wait();
 
             foreach (var file in files)
             {
