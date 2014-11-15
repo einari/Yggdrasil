@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>Yggdrasil</id>
-    <version>0.5.0.3</version>
+    <version>1.0.0.0</version>
     <title>Yggdrasil</title>
     <authors>Einar Ingebrigtsen</authors>
     <owners>Dolittle</owners>
@@ -10,9 +10,14 @@
     <projectUrl>http://github.com/dolittle/yggdrasil</projectUrl>
     <iconUrl>https://raw.github.com/dolittle/Yggdrasil/master/icon.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>A simple IoC container for WinRT Windows Store apps</description>
-    <releaseNotes>Initial release</releaseNotes>
-    <copyright>Copyright 2012</copyright>
-    <tags>IoC WinRT Windows8</tags>
+    <description>A simple IoC container for Windows 8.1 / Windows Phone 8.1 - RT - Store based apps</description>
+    <releaseNotes></releaseNotes>
+    <copyright>Copyright 2014</copyright>
+    <tags>IoC WinRT Windows8.1 WindowsPhone8.1</tags>
   </metadata>
+  <files>
+    <file src="Yggdrasil.WindowsPhone\bin\Release\*.*" target="lib\wpa"/>
+    <file src="Yggdrasil\bin\Release\*.*" target="lib\windows8"/>
+    <file src="Yggdrasil\**\*.cs" target="src" />
+  </files>
 </package>
