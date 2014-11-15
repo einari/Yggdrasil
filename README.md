@@ -1,7 +1,7 @@
 Yggdrasil
 ========
 
-A simple IoC container for WinRT Windows Store apps
+A simple IoC container for Windows 8.x and Windows Phone 8.1 RT Store apps
 
 http://en.wikipedia.org/wiki/Yggdrasil
 
